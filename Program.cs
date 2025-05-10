@@ -1,18 +1,31 @@
-﻿using FalloutHackingHelper;
+﻿using static FalloutHackingHelper.Helper;
 
-while (true)
+var selectedValues = new List<(string word, int matchCount)>
 {
-    Helper.MenuDeialogue();
+    InputSelectedWordAndMutchCount()
+};
+PrintSelectedValues(selectedValues);
+
+MenuOption option;
+while ((option = MenuDeialogue()) != MenuOption.ExitProgram)
+{
+    switch (option)
+    {
+        case MenuOption.AddPasswordAndMatchCount:
+            selectedValues.Add(InputSelectedWordAndMutchCount());
+            PrintSelectedValues(selectedValues);
+            break;
+        case MenuOption.CheckNewPassword:
+            InputAndCheckNewPassword(selectedValues);
+            break;
+        case MenuOption.ViewPasswordsAndMatchCounts:
+            PrintSelectedValues(selectedValues);
+            break;
+        case MenuOption.ClearPasswordsAndMatchCounts:
+            selectedValues.Clear();
+            break;
+        case MenuOption.InvalidOption:
+            Console.WriteLine("Invalid option selected. Please try again.");
+            break;
+    }
 }
-
-var (selectedWord, matchCount) = Helper.InputSelectedWordAndMutchCount();
-
-Console.Write("Input a password you want to select: ");
-var pass = Console.ReadLine() ?? "";
-
-var calculatedMatchCount = Helper.CalculateMatchingCharCount(pass.ToUpperInvariant(), selectedWord.ToUpperInvariant());
-Console.WriteLine($"Match count for '{pass}' and '{selectedWord}' is : {calculatedMatchCount}");
-if (calculatedMatchCount == matchCount)
-    Console.WriteLine($"{pass} - Can be a right password!");
-else
-    Console.WriteLine($"{pass} - Is wrong. Do not select.");
